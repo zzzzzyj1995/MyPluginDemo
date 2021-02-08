@@ -34,7 +34,7 @@ class HostGradlePlugin implements Plugin<Project> {
         zyjHostDir = new File(project.getBuildDir(), "zyjHost")
         project.afterEvaluate {
             project.android.applicationVariants.each { ApplicationVariantImpl variant ->
-                //生成hostDependence文件
+                //收集dependence并生成hostDependence文件
                 generateDependenceFile(variant)
 
             }

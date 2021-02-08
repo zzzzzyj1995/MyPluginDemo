@@ -7,6 +7,9 @@ import com.zyj.plugin.PluginDependencyManager
 import groovy.io.FileType
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
+
+import javax.swing.Spring
+
 /**
  * Strip Host classes and java resources from project, it's an equivalent of provided compile
  * @author zhengtao
@@ -18,7 +21,7 @@ class StripClassAndResTransform extends Transform {
 
     StripClassAndResTransform(Project project) {
         this.project = project
-        this.pluginDependencyManager=project.rootProject.ext.pluginDependencyManager
+        this.pluginDependencyManager = project.rootProject.ext.pluginDependencyManager
     }
 
 
@@ -48,14 +51,32 @@ class StripClassAndResTransform extends Transform {
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         super.transform(transformInvocation)
-
+        Set<String> stripJarPaths = pluginDependencyManager.getStripJarsPaths()
+        stripJarPaths.each {
+            println("stripJarPaths>>>>>>>${it}")
+        }
         transformInvocation.inputs.forEach { input ->
             input.jarInputs.forEach { jarInput ->
-                println("jarInput>>>>>${jarInput.file.name}")
-
+                println("alllJarInput>>>>>${jarInput.file.absolutePath}")
+                if(!stripJarPaths.contains(jarInput.file.absolutePath)){
+                    println("stainJarInput>>>>>${jarInput.file.absolutePath}")
+                    def dest = transformInvocation.outputProvider.getContentLocation(jarInput.name,
+                            jarInput.contentTypes, jarInput.scopes, Format.JAR)
+                    FileUtils.copyFile(jarInput.file, dest)
+                }
+                println("-----------------------------------------")
             }
             input.directoryInputs.forEach { directoryInput ->
-                println("directoryInput>>>>>>>${directoryInput.file.name}")
+                def destDir = transformInvocation.outputProvider.getContentLocation(
+                        directoryInput.name, directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY)
+                directoryInput.file.traverse(type: FileType.FILES) {
+                    def entryName = it.path.substring(directoryInput.file.path.length() + 1)
+                    println("directoryInput>>>>>>${entryName}")
+                    if (!stripJarPaths.contains(entryName)) {
+                        def dest = new File(destDir, entryName)
+                        FileUtils.copyFile(it, dest)
+                    }
+                }
             }
         }
     }

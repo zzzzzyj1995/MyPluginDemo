@@ -44,7 +44,7 @@ class TaskHookerManager {
                     taskHookerMap[task.name]?.afterTaskExecute(task)
                 }
             }
-            recordInputAndOutput(task)
+//            recordInputAndOutput(task)
         }
         void recordInputAndOutput(Task task) {
             if (task.name == "lintVitalRelease") {

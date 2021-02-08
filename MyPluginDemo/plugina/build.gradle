@@ -36,6 +36,6 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    compile 'org.hibernate:hibernate-core:3.6.3.Final'
+    api 'org.slf4j:slf4j-api:1.7.22'
     implementation project(':pluginLib')
 }

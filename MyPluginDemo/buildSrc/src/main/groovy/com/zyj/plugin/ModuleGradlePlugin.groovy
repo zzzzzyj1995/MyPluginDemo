@@ -39,28 +39,23 @@ class ModuleGradlePlugin implements Plugin<Project> {
         project.afterEvaluate {
             android.applicationVariants.all { ApplicationVariantImpl appVariant ->
                 registerTaskHooker(project, appVariant)
-//                registerTaskHookers(project, appVariant)
             }
         }
         android.registerTransform(new StripClassAndResTransform(project))
     }
     def registerTaskHooker(Project project, ApkVariant apkVariant) {
         TaskHookerManager taskHookerManager = new TaskHookerManager(project)
-//        taskHookerManager.registerTaskHooker(new PrepareDependenciesHooker(project, apkVariant))
-        //注册taskhooker
+        taskHookerManager.registerTaskHooker(new PrepareDependenciesHooker(project, apkVariant))
 
 
     }
 
     def hookVariantFactory() {
         AppPlugin appPlugin = project.plugins.findPlugin(AppPlugin)
-
         Reflect reflect = Reflect.on(appPlugin.variantManager)
-
         VariantFactory variantFactory = Proxy.newProxyInstance(this.class.classLoader, [VariantFactory.class] as Class[],
                 new InvocationHandler() {
                     Object delegate = reflect.get('variantFactory')
-
                     @Override
                     Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                         if ('preVariantWork' == method.name) {
@@ -69,7 +64,6 @@ class ModuleGradlePlugin implements Plugin<Project> {
                                 //修改module中dependence的版本
                                 modifyModuleDependenceVersion()
                         }
-
                         return method.invoke(delegate, args)
                     }
                 })

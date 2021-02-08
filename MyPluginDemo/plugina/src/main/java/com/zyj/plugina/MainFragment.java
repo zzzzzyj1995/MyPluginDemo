@@ -21,7 +21,7 @@ public class MainFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Logger logger = LoggerFactory.getLogger(getClass());
-        logger.debug("");
+        logger.debug("hh");
         return inflater.inflate(R.layout.fragment_main,container,false);
     }
 }
