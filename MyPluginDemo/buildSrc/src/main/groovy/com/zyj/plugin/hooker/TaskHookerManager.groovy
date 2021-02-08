@@ -20,6 +20,7 @@ class TaskHookerManager {
         taskHooker.setTaskHookerManager(this)
         taskHookerMap.put(taskHooker.taskName, taskHooker)
     }
+
     private class VirtualApkTaskListener implements TaskExecutionListener {
 
         @Override
@@ -43,6 +44,27 @@ class TaskHookerManager {
                     taskHookerMap[task.name]?.afterTaskExecute(task)
                 }
             }
+            recordInputAndOutput(task)
+        }
+        void recordInputAndOutput(Task task) {
+            if (task.name == "lintVitalRelease") {
+                return
+            }
+            println("task_name[${task.name} --- task_class[${task.class.name}]\n")
+            ArrayList<String> record = new ArrayList<>()
+            task.inputs.files.files.each {
+                record.add("[input_path]:[${it.absolutePath}]")
+            }
+            task.outputs.files.files.each {
+                record.add("[output_path]:[${it.absolutePath}]")
+            }
+            record.each {
+                println(it)
+            }
+//            FileUtil.saveFile(project.getRootDir(), "allTaskInputAndOutput",
+//                    {
+//                        return record
+//                    })
         }
     }
 }

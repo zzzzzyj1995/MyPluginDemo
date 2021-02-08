@@ -22,7 +22,6 @@ import java.lang.reflect.Proxy
 class ModuleGradlePlugin implements Plugin<Project> {
     Project project
     PluginDependencyManager pluginDependencyManager
-    boolean isTaskOfFilter //记录启动参数,区分config状态
 
     @Override
     void apply(Project project) {
