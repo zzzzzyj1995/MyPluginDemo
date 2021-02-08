@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Main2Activity extends PluginHostActivity{
     private TextView mTextView;
     @Override
@@ -23,6 +26,8 @@ public class Main2Activity extends PluginHostActivity{
                 ViewGroup.LayoutParams.MATCH_PARENT));
         mTextView = new TextView(this);
         viewRoot.addView(mTextView);
+        Logger logger=LoggerFactory.getLogger(getClass());
+        logger.debug("");
         viewRoot.setId(android.R.id.primary);
         return viewRoot;
     }
