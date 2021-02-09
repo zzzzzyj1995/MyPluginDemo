@@ -1,5 +1,6 @@
 package com.zyj.plugin
 
+import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.zyj.plugin.collector.dependence.DependenceInfo
 
 class PluginDependencyManager {
@@ -7,6 +8,7 @@ class PluginDependencyManager {
     private Collection<DependenceInfo> stripDependencies
     public Map hostDependenceMap
     private File mHostDependenceFile
+    private ApplicationVariantImpl appVariant
 
     Collection<DependenceInfo> getStripDependencies() {
         return stripDependencies
@@ -54,7 +56,7 @@ class PluginDependencyManager {
 
     Set<String> getStripJarsPaths() {
         Set<String> stripJarsPaths = new HashSet<>()
-        if (stripDependencies!=null) {
+        if (stripDependencies != null) {
             stripDependencies.each {
                 println("jarFile.absolutePath>>>>>>${it.jarFile.absolutePath}")
                 stripJarsPaths.add(it.jarFile.absolutePath)
@@ -62,4 +64,12 @@ class PluginDependencyManager {
         }
         return stripJarsPaths
     }
+
+    void setVariant(ApplicationVariantImpl variant) {
+        appVariant = variant
+    }
+    def getVariant(){
+        return appVariant
+    }
+
 }

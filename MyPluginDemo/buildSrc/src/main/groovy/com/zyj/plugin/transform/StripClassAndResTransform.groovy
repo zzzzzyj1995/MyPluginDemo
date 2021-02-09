@@ -8,12 +8,7 @@ import groovy.io.FileType
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
 
-import javax.swing.Spring
 
-/**
- * Strip Host classes and java resources from project, it's an equivalent of provided compile
- * @author zhengtao
- */
 class StripClassAndResTransform extends Transform {
 
     private Project project
@@ -45,13 +40,21 @@ class StripClassAndResTransform extends Transform {
         return false
     }
 
-    /**
-     * Only copy the jars or classes and java resources of retained aar into output directory
-     */
+
     @Override
     void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         super.transform(transformInvocation)
         Set<String> stripJarPaths = pluginDependencyManager.getStripJarsPaths()
+        def curStripJarPath
+        stripJarPaths.each {
+            if(it.contains("release")) {
+                println("pluginDependencyManager.getVariant().name>>>>>>>${pluginDependencyManager.getVariant().name}")
+                curStripJarPath=it.replace("release", pluginDependencyManager.getVariant().name)
+            }
+        }
+        if(curStripJarPath!=null) {
+            stripJarPaths.add(curStripJarPath)
+        }
         stripJarPaths.each {
             println("stripJarPaths>>>>>>>${it}")
         }

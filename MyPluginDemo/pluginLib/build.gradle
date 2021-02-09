@@ -8,7 +8,7 @@ android {
 //        additionalParameters '--allow-reserved-package-id','--package-id','0x7f'
 //    }
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 20
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"

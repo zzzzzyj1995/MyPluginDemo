@@ -29,10 +29,11 @@ import static com.android.build.gradle.internal.publishing.AndroidArtifacts.Cons
  * @author zhengtao
  */
 class PrepareDependenciesHooker extends BaseTaskHooker<AppPreBuildTask> {
-
+    ApkVariant apkVariant
 
     PrepareDependenciesHooker(Project project, ApkVariant apkVariant) {
         super(project, apkVariant)
+        this.apkVariant = apkVariant
     }
 
     @Override
@@ -63,6 +64,7 @@ class PrepareDependenciesHooker extends BaseTaskHooker<AppPreBuildTask> {
             }
         }
         PluginDependencyManager pluginDependencyManager = getPluginDependenceManager()
+        pluginDependencyManager.setVariant(apkVariant)
         Map hostDependence = pluginDependencyManager.hostDependenceMap
         ImmutableMap<String, String> buildMapping = BuildMappingUtils.computeBuildMapping(project.getGradle());
         Dependencies dependencies = new ArtifactDependencyGraph().createDependencies(scope, false, buildMapping, consumer)
@@ -76,7 +78,7 @@ class PrepareDependenciesHooker extends BaseTaskHooker<AppPreBuildTask> {
         dependencies.libraries.each {
             def mavenCoordinates = it.resolvedCoordinates
             println("PrepareDependenciesHooker>>>>>library ${mavenCoordinates.groupId}:${mavenCoordinates.artifactId}")
-            def key=mavenCoordinates.artifactId.startsWith(":")?"${mavenCoordinates.groupId}${mavenCoordinates.artifactId}":"${mavenCoordinates.groupId}:${mavenCoordinates.artifactId}"
+            def key = mavenCoordinates.artifactId.startsWith(":") ? "${mavenCoordinates.groupId}${mavenCoordinates.artifactId}" : "${mavenCoordinates.groupId}:${mavenCoordinates.artifactId}"
             if (hostDependence.containsKey(key)) {
                 println("PrepareDependenciesHooker>>>>>Need strip aar: ${mavenCoordinates.groupId}:${mavenCoordinates.artifactId}:${mavenCoordinates.version}")
                 if (it.getProject() == null) {
