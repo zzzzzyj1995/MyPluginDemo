@@ -66,16 +66,18 @@ class PrepareDependenciesHooker extends BaseTaskHooker<AppPreBuildTask> {
         Map hostDependence = pluginDependencyManager.hostDependenceMap
         ImmutableMap<String, String> buildMapping = BuildMappingUtils.computeBuildMapping(project.getGradle());
         Dependencies dependencies = new ArtifactDependencyGraph().createDependencies(scope, false, buildMapping, consumer)
-
-        println("hostDependence>>>>>>>>${hostDependence}")
+        hostDependence.each {
+            println("hostDependence.key>>>>>${it.key}")
+        }
 
         def stripDependencies = [] as Collection<DependenceInfo>
 
 //把需要删除的依赖存到stripDependencies
         dependencies.libraries.each {
             def mavenCoordinates = it.resolvedCoordinates
-            println("PrepareDependenciesHooker>>>>>library ${it.toString()}")
-            if (hostDependence.containsKey("${mavenCoordinates.groupId}:${mavenCoordinates.artifactId}")) {
+            println("PrepareDependenciesHooker>>>>>library ${mavenCoordinates.groupId}:${mavenCoordinates.artifactId}")
+            def key=mavenCoordinates.artifactId.startsWith(":")?"${mavenCoordinates.groupId}${mavenCoordinates.artifactId}":"${mavenCoordinates.groupId}:${mavenCoordinates.artifactId}"
+            if (hostDependence.containsKey(key)) {
                 println("PrepareDependenciesHooker>>>>>Need strip aar: ${mavenCoordinates.groupId}:${mavenCoordinates.artifactId}:${mavenCoordinates.version}")
                 if (it.getProject() == null) {
                     stripDependencies.add(
